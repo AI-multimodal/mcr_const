@@ -1,26 +1,13 @@
-from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline, interp1d
-from scipy.optimize import curve_fit
-import inspect
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+from pymcr.constraints import Constraint
+from typing import List, Tuple
 
-def generate_phase_law_constraint(nspecies, npos, interface_positions, threshold=1.0E-3):
-    assert nspecies == len(interface_positions) + 2
-    zero_positions = [np.r_[0:pre, post:npos]
-                      for pre, post in zip(
-                          [0, 0] + interface_positions,
-                          interface_positions + [npos, npos])
-                      ]
-    zero_indices = [(zp, np.full_like(zp, fill_value=i))
-                    for i, zp in enumerate(zero_positions)]
-    c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, value=threshold)
-    return c_zero_constraint
+from .basic import VarType
 
 
 class ConstraintPointBelow(Constraint):
     def __init__(self, point_indices=((0, 0),), value=0.01, copy=False, retain_mean=True):
+        super(ConstraintPointBelow, self).__init__()
         self.copy = copy
         self.point_indices = point_indices
         self.value = value
@@ -44,9 +31,45 @@ class ConstraintPointBelow(Constraint):
             A *= prev_mean / A.mean()
         return A
 
+    @classmethod
+    def from_phase_law(cls, n_species: int, n_pos: int, interface_positions: List[int], threshold: float = 1.0E-3):
+        """
+        Generate a constraint based on phase. Works on the concentration dimension
+
+        :param n_species:
+        :param n_pos:
+        :param interface_positions:
+        :param threshold:
+        :return:
+        """
+        assert n_species == len(interface_positions) + 2
+        zero_positions = [np.r_[0:pre, post:n_pos]
+                          for pre, post in zip(
+                [0, 0] + interface_positions,
+                interface_positions + [n_pos, n_pos])
+                          ]
+        zero_indices = [(zp, np.full_like(zp, fill_value=i))
+                        for i, zp in enumerate(zero_positions)]
+        c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, value=threshold)
+        return c_zero_constraint
+
+    @classmethod
+    def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], threshold: float = 1.0E-3,
+                   var_type: VarType = VarType.CONCENTRATION):
+        index_list = []
+        for start, end in i_ranges:
+            ci = (np.r_[start: end],
+                  np.full(start - end, fill_value=i_specie))
+            if var_type == VarType.SPECTRA:
+                ci = tuple(reversed(ci))
+            index_list.append(ci)
+        const = ConstraintPointBelow(point_indices=index_list, value=threshold)
+        return const
+
 
 class ConstraintMonotonic(Constraint):
     def __init__(self, line_indices=(), copy=False, descending=False):
+        super(ConstraintMonotonic, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
         self.descending = descending
@@ -71,6 +94,7 @@ class ConstraintMonotonic(Constraint):
 
 class ConstraintElasticBand(Constraint):
     def __init__(self, line_indices=(), copy=False, ref_line=None, k=5, width=0.5, bottom=True, top=True):
+        super(ConstraintElasticBand, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
         assert 'numpy.ndarray' in str(type(ref_line))
@@ -92,9 +116,9 @@ class ConstraintElasticBand(Constraint):
             assert len(p[0].shape) == 1
             x = self.ref_line.copy()
             y = A[p]
-            phi = (y-x)/self.width
-            scale = 1.0/(1.0+np.exp(-self.k * phi))
-            scale = 2*scale - 1.0
+            phi = (y - x) / self.width
+            scale = 1.0 / (1.0 + np.exp(-self.k * phi))
+            scale = 2 * scale - 1.0
             excess_indices = np.fabs(scale) > np.fabs(phi)
             scale[excess_indices] = phi[excess_indices]
             if not self.top:

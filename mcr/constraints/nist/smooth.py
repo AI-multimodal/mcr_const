@@ -1,13 +1,14 @@
-from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline, interp1d
-from scipy.optimize import curve_fit
-import inspect
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+from pymcr.constraints import Constraint
+from scipy.interpolate import UnivariateSpline
+from typing import Tuple, List
+
+from .basic import VarType
+
 
 class ConstraintSmooth(Constraint):
     def __init__(self, line_indices=(), exponent=5, smoothing_factor=1.0, copy=False):
+        super(ConstraintSmooth, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
         self.exponent = exponent
@@ -27,13 +28,25 @@ class ConstraintSmooth(Constraint):
             y = A[p]
             spl = UnivariateSpline(x, y, k=self.exponent, s=self.smoothing_factor)
             y2 = spl(x)
-            y2[y2<0] = 0.0
+            y2[y2 < 0] = 0.0
             A[p] = y2
         return A
+
+    @classmethod
+    def from_range(cls, i_specie: int, i_range: Tuple[int, int], exponent: int = 5, smoothing_factor: float = 1.0,
+                   var_type: VarType = VarType.CONCENTRATION):
+        start, end = i_range
+        ci = (np.r_[start: end],
+              np.full(start - end, fill_value=i_specie))
+        if var_type == VarType.SPECTRA:
+            ci = tuple(reversed(ci))
+        const = ConstraintSmooth(line_indices=[ci], exponent=exponent, smoothing_factor=smoothing_factor)
+        return const
 
 
 class ConstraintConstant(Constraint):
     def __init__(self, line_indices=(), copy=False):
+        super(ConstraintConstant, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
 
@@ -51,9 +64,22 @@ class ConstraintConstant(Constraint):
             A[p] = y.mean()
         return A
 
+    @classmethod
+    def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], var_type: VarType = VarType.CONCENTRATION):
+        index_list = []
+        for start, end in i_ranges:
+            ci = (np.r_[start: end],
+                  np.full(start - end, fill_value=i_specie))
+            if var_type == VarType.SPECTRA:
+                ci = tuple(reversed(ci))
+            index_list.append(ci)
+        const = ConstraintConstant(line_indices=index_list)
+        return const
+
 
 class ConstraintElasticConstant(Constraint):
     def __init__(self, line_indices=(), copy=False, k=5, width=0.5):
+        super(ConstraintElasticConstant, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
         self.k = k

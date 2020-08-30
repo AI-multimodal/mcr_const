@@ -1,13 +1,15 @@
-import numpy as np
-from scipy import special
-import math
-from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline, interp1d
-from scipy.optimize import curve_fit
 import inspect
+import math
+
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
+from pymcr.constraints import Constraint
+from scipy import special
+from scipy.interpolate import UnivariateSpline
+from scipy.optimize import curve_fit
+from typing import Callable
+
 
 def exp_mod_gaussian(x, area, center, width, distortion):
     if distortion / width < 0.001:
@@ -44,8 +46,9 @@ def exp_n_halfgau_mod_gaussian(x, area, center, width, distortion1, distortion2)
 
 
 class ConstraintWithFunction(Constraint):
-    def __init__(self, line_indices=(), func=None, xgrid=None, initial_guess=None, bounds=(-np.inf, np.inf),
-                 method='trf',copy=False):
+    def __init__(self, line_indices=(), func: Callable = None, xgrid=None, initial_guess=None, bounds=(-np.inf, np.inf),
+                 method='trf', copy=False):
+        super(ConstraintWithFunction, self).__init__()
         self.copy = copy
         assert inspect.isfunction(func)
         sig = inspect.signature(func)
@@ -83,12 +86,13 @@ class ConstraintWithFunction(Constraint):
 class ConstraintGuinier(Constraint):
     def __init__(self, line_indices, qgrid, qscale_vector, q_max=0.2, q_guinier=0.1, mix_ratio=1.0, default_rg=5.0,
                  guinier_smoothing_factor=1.0, linear_grad_thresh=1.0, plot_ax=None, color_list=None, copy=False):
+        super(ConstraintGuinier, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
         self.q_max = q_max
         self.q_guinier = q_guinier
         self.qscale_vector = qscale_vector
-        assert mix_ratio > 0.0 and mix_ratio <= 1.0
+        assert 0.0 < mix_ratio <= 1.0
         self.mix_ratio = mix_ratio
         self.default_rg = default_rg
         self.qgrid = qgrid
@@ -102,7 +106,7 @@ class ConstraintGuinier(Constraint):
     @staticmethod
     def fit_guinier_spec(qgrid, xs, qh, default_rg, guinier_smoothing_factor=1.0, linear_grad_thresh=1.0, min_points=10,
                          ax=None, color_list=None, color_idx=0, intensity_lower_bound=1.0E-10):
-        vq = (qgrid < qh) & (xs >  intensity_lower_bound)
+        vq = (qgrid < qh) & (xs > intensity_lower_bound)
         spl = UnivariateSpline(qgrid[vq] ** 2, np.log(xs[vq]), k=2, s=guinier_smoothing_factor)
         linear_indices = np.fabs(spl.derivative(n=2)(qgrid[vq] ** 2)) * 1.0E-4 < linear_grad_thresh
         full_indices = np.arange(xs.shape[0])
@@ -112,7 +116,10 @@ class ConstraintGuinier(Constraint):
 
         if qgrid[vq].shape[0] < min_points:
             return xs
-        rg, i0 = np.polyfit(qgrid[vq] ** 2, np.log(xs[vq]), 1)
+        # noinspection PyTupleAssignmentBalance
+        rg, i0 = np.polyfit(x=qgrid[vq] ** 2,
+                            y=np.log(xs[vq]),
+                            deg=1)
         i0 = np.exp(i0)
         if rg < 0:
             rg = np.sqrt(-rg * 3.)
@@ -127,9 +134,11 @@ class ConstraintGuinier(Constraint):
         return gspec
 
     @staticmethod
-    def plot_fitting(nspecies, subsize=4, ylim=[1.0, 1.0E4], palette=("coolwarm", 300)):
+    def plot_fitting(nspecies, subsize=4, ylim=(1.0, 1.0E4), palette=("coolwarm", 300)):
         color_list = sns.color_palette(*palette)
-        fig, ax_array = plt.subplots(nrows=1, ncols=nspecies, sharey=True, sharex=True, figsize=(nspecies * subsize, subsize))
+        # noinspection PyTypeChecker
+        fig, ax_array = plt.subplots(nrows=1, ncols=nspecies, sharey=True, sharex=True,
+                                     figsize=(nspecies * subsize, subsize))
         if nspecies == 1:
             ax_array = [ax_array]
         ax_array[0].set_ylim(ylim)
@@ -160,4 +169,3 @@ class ConstraintGuinier(Constraint):
                 self.plot_ax.loglog(self.qgrid, A[p] / self.qscale_vector, "2", alpha=0.2, c=color)
         self.color_idx += 1
         return A
-

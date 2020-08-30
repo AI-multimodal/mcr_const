@@ -1,13 +1,4 @@
-import numpy as np
-from scipy import special
-import math
 from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline, interp1d
-from scipy.optimize import curve_fit
-import inspect
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 class SharedGlobalPrefactor(object):
@@ -19,6 +10,7 @@ class SharedGlobalPrefactor(object):
 
 class ConstraintGlobalPrefactor(Constraint):
     def __init__(self, stage, shared_prefactor: SharedGlobalPrefactor, sum_axis=-1, copy=False):
+        super(ConstraintGlobalPrefactor, self).__init__()
         self.copy = copy
         assert stage in [1, 2]
         self.stage = stage

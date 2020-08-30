@@ -1,18 +1,16 @@
-import numpy as np
-from scipy import special
-import math
-from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline, interp1d
-from scipy.optimize import curve_fit
 import inspect
+
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+from pymcr.constraints import Constraint
+from scipy.interpolate import interp1d
+from scipy.optimize import curve_fit
+
 
 class ConstraintWithTotalConcentration(Constraint):
     def __init__(self, line_indices=(), shift_guess=0, scale_guess=1.0, bounds=((-10, 10), (0.9, 1.1)),
                  method='trf', total_conc=None, copy=False, min_conc=1.0E-2, suppress_only=False,
                  specie_wise=False, peak_ranges=8):
+        super(ConstraintWithTotalConcentration, self).__init__()
         self.copy = copy
         self.bounds = bounds
         self.method = method
@@ -64,7 +62,7 @@ class ConstraintWithTotalConcentration(Constraint):
         result_y = self.shift_and_scale_conc(self.total_conc, *result_x)
         if not self.specie_wise:
             total_conc_A[total_conc_A < self.min_conc] = self.min_conc
-            result_y[result_y<self.min_conc] = self.min_conc
+            result_y[result_y < self.min_conc] = self.min_conc
             tot_scale_vec = result_y / total_conc_A
         else:
             tot_scale_vec = []
@@ -77,7 +75,7 @@ class ConstraintWithTotalConcentration(Constraint):
                 tot_scale_vec.append(result_y[i_t]/A[p][i_a])
             tot_scale_vec = np.array(tot_scale_vec)
         if self.suppress_only:
-            tot_scale_vec[tot_scale_vec>1.0] = 1.0
+            tot_scale_vec[tot_scale_vec > 1.0] = 1.0
         for i, p in enumerate(self.line_indices):
             p = tuple(p)
             if not self.specie_wise:
@@ -92,6 +90,7 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
                  gau_method='trf', gau_var_bounds_perc=0.1,
                  shift_scale_guess=(0.0, 1.0), shift_scale_bounds=((-10, 10), (0.9, 1.1)),
                  tot_method='trf', total_conc=None, copy=False):
+        super(ConstraintWithFunctionAndTotalConcentration, self).__init__()
         self.copy = copy
         assert inspect.isfunction(gau_func)
         sig = inspect.signature(gau_func)
