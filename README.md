@@ -19,8 +19,8 @@ python setup.py develop
 ```
 
 # Usage
-The constraints in this repository is based [pyMCR](https://github.com/usnistgov/pyMCR) 
-from NIST and is completely compatible with pyMCR.
+The constraints in this repository is designed to be compatible with [pyMCR](https://github.com/usnistgov/pyMCR) 
+from NIST. Every MCR can be initiated in the same way they would do in pyMCR.
 
 E.g. To decompose a XANES sequence, we can use pyMCR only code:
 ```python
