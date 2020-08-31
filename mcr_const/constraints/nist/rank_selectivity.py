@@ -32,21 +32,22 @@ class ConstraintPointBelow(Constraint):
         return A
 
     @classmethod
-    def from_phase_law(cls, n_species: int, n_pos: int, interface_positions: List[int], threshold: float = 1.0E-3):
+    def from_phase_law(cls, n_species: int, sequence_length: int, interface_positions: List[int],
+                       threshold: float = 1.0E-3):
         """
         Generate a constraint based on phase. Works on the concentration dimension
 
         :param n_species:
-        :param n_pos:
+        :param sequence_length:
         :param interface_positions:
         :param threshold:
         :return:
         """
         assert n_species == len(interface_positions) + 2
-        zero_positions = [np.r_[0:pre, post:n_pos]
+        zero_positions = [np.r_[0:pre, post:sequence_length]
                           for pre, post in zip(
                 [0, 0] + interface_positions,
-                interface_positions + [n_pos, n_pos])
+                interface_positions + [sequence_length, sequence_length])
                           ]
         zero_indices = [(zp, np.full_like(zp, fill_value=i))
                         for i, zp in enumerate(zero_positions)]
