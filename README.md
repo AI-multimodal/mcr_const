@@ -70,7 +70,7 @@ against phase law. To solve this problem, we can apply the rank selectivity cons
 
 ### Rank Selectivity Constraint
 This constraint is available via module ```mcr_const.constraints.nist``` in this repository and comes with a constructor for flexible targeting region definition. In parallel,
-we have provided a helper function from_xxx() as a ```classmethod``` to make ease usage of the constraint for
+we have provided a helper function ```from_xxx()``` as a ```classmethod``` to make ease usage of the constraint for
 simple questions. The following code is an example on how to use this constraint:
 ```python
 from pymcr.mcr import McrAR
