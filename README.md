@@ -170,7 +170,9 @@ mcrar.fit(spectra_sequence, ST=spec_guess)
 resolved_conc = mcrar.C_opt_
 resolved_spec = mcrar.ST_opt_
 
-
+# Make plots for visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
 plt.figure()
 colors = sns.color_palette('bright', resolved_conc.shape[0])
 for i, (conc, nc, color) in enumerate(zip(resolved_conc.T, noisy_conc.T, colors)):
