@@ -127,7 +127,7 @@ the information obtained from prior knowledge.
 
 ### Smoothing Constraint
 The smoothing constraint is designed to smooth noisy profile, for concentration or/and spectra. Similarly, it comes with
-a helper function for simplified construction. It is worth note that we need to specific ```var_type``` parameter to
+a helper function for simplified construction. It is worth note that we need to specify ```var_type``` parameter to
 specify whether concentration or spectra is the target of constraint to be created:
 ```python
 from pymcr.mcr import McrAR
