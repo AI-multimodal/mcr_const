@@ -109,9 +109,8 @@ def generate_spectra_sequence():
     noisy_concs = np.zeros([num_concs, n_noisy])
     noisy_concs[:, 0] = np.arange(num_concs) ** 2 / ((num_concs - 1) ** 2)
     noisy_concs[:, 1] = 1.0 - noisy_concs[:, 0]
-    noisy_concs += np.random.random([num_concs, n_noisy]) * 0.2 + 0.1
-    noisy_specs = base_specs[:n_noisy] + np.random.random([n_noisy, base_specs.shape[1]]) * 0.2
-    noisy_seq = noisy_concs @ noisy_specs
+    noisy_seq = noisy_concs @ base_specs[:n_noisy, 10:-10]
+    noisy_seq += np.random.random(noisy_seq.shape) * 0.2
 
     return base_specs, weighted_specs, syn_sequence, noisy_seq
 
