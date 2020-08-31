@@ -2,7 +2,7 @@ Prior Knowledge Embedding Constraints to Help the Deconvolution of Spectra Seque
 using MCR.
 
 For a time resolved spectra sequence D, it deconvolutes to concentration time evolution 
-profile C and individual spectra for each components.
+profile C and individual spectra S<sup>T</sup> for each components.
 
 D = CS<sup>T</sup>                            | 
 :--------------------------------------------:|
