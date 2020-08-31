@@ -64,12 +64,12 @@ Resolved Concentration                             |  Resolved Spectra
 
 For this specific dataset, the spectra is almost perfect (solid line are resolved value, dashed line 
 are true value). However, the red and green concentration exhibit a wierd trend of first going to 
-zero and then going up again. In addition, there are more than 2 phase in the same point which is 
+zero and then going up again. In addition, there are more than 2 phases in the same point which is 
 against phase law. To solve this problem, we can apply the rank selectivity constraint.
 
 ### Rank Selectivity Constraint
-This constraint is available via module ```python mcr_const.constraints.nist``` in this repository and comes with a constructor for flexible targeting region definition. In parallel,
-we have provided a helper function from_xxx() as a classmethod to make ease usage of the constraint for
+This constraint is available via module ```mcr_const.constraints.nist``` in this repository and comes with a constructor for flexible targeting region definition. In parallel,
+we have provided a helper function from_xxx() as a ```classmethod``` to make ease usage of the constraint for
 simple questions. The following code is an example on how to use this constraint:
 ```python
 from pymcr.mcr import McrAR
@@ -121,7 +121,8 @@ Resolved Concentration                             |  Resolved Spectra
 ![](images/rank_selectivity/Resolved%20Concentration.png) | ![](images/rank_selectivity/Resolved%20Spectra.png)
 
 It is intuitive that not only the concentrations conforms to physical law now, but also the improvement to spectra 
-quality.
+quality. The underlying ConstraintPointBelow class pushes concentration to zero at certain regions, which makes use of
+the information obtained from prior knowledge.
 
 
 For more details see the class definition the notebooks in [Examples](./examples).
