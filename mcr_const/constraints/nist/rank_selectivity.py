@@ -6,11 +6,21 @@ from .basic import VarType
 
 
 class ConstraintPointBelow(Constraint):
-    def __init__(self, point_indices=((0, 0),), value=0.01, copy=False, retain_mean=True):
+    def __init__(self, point_indices: List[Tuple[np.ndarray, np.ndarray]], threshold: float = 1.0E-3,
+                 copy: bool = False, retain_mean: bool = True):
+        """
+        Push the values at specific region to be bellow threshold
+
+        :param point_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
+                              dimension. Multiple region are supported.
+        :param threshold: The threshold to meet.
+        :param copy: Whether keep original matrix
+        :param retain_mean: Whether do scaling after pushing to maintain to the overall amplitudes of the profiles.
+        """
         super(ConstraintPointBelow, self).__init__()
         self.copy = copy
         self.point_indices = point_indices
-        self.value = value
+        self.threshold = threshold
         self.retain_mean = retain_mean
 
     def transform(self, A):
@@ -20,28 +30,28 @@ class ConstraintPointBelow(Constraint):
         prev_mean = A.mean()
         for p in self.point_indices:
             if 'numpy.ndarray' in str(type(A[p])):
-                if (A[p] > self.value).any():
-                    p_above_index = A[p] > self.value
+                if (A[p] > self.threshold).any():
+                    p_above_index = A[p] > self.threshold
                     p_above = tuple([dim[p_above_index] for dim in p])
-                    A[p_above] = self.value
+                    A[p_above] = self.threshold
             else:
-                if A[p] > self.value:
-                    A[p] = self.value
+                if A[p] > self.threshold:
+                    A[p] = self.threshold
         if self.retain_mean:
             A *= prev_mean / A.mean()
         return A
 
     @classmethod
     def from_phase_law(cls, n_species: int, sequence_length: int, interface_positions: List[int],
-                       threshold: float = 1.0E-3):
+                       threshold: float = 1.0E-3) -> 'ConstraintPointBelow':
         """
-        Generate a constraint based on phase. Works on the concentration dimension
+        Generate a constraint based on phase law. Design to be use for the concentration matrix.
 
-        :param n_species:
-        :param sequence_length:
-        :param interface_positions:
-        :param threshold:
-        :return:
+        :param n_species: Number of species in MCR.
+        :param sequence_length: The length of concentration profile. Unit: data points.
+        :param interface_positions: The positions (index) that separates different phases.
+        :param threshold: The threshold to meet for the constraint.
+        :return: ConstraintPointBelow instance
         """
         assert n_species == len(interface_positions) + 2
         zero_positions = [np.r_[0:pre, post:sequence_length]
@@ -51,12 +61,22 @@ class ConstraintPointBelow(Constraint):
                           ]
         zero_indices = [(zp, np.full_like(zp, fill_value=i))
                         for i, zp in enumerate(zero_positions)]
-        c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, value=threshold)
+        c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, threshold=threshold)
         return c_zero_constraint
 
     @classmethod
     def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], threshold: float = 1.0E-3,
-                   var_type: VarType = VarType.CONCENTRATION):
+                   var_type: VarType = VarType.CONCENTRATION) -> 'ConstraintPointBelow':
+        """
+        Construct a ConstraintPointBelow instance using specified range.
+
+        :param i_specie: The index for targeting specie.
+        :param i_ranges: The range in profile, express as tuple index along the time dimension. Multiple region are
+                         supported.
+        :param threshold: The threshold to meet for the constraint.
+        :param var_type: Apply to concentration or spectra matrix.
+        :return: ConstraintPointBelow instance
+        """
         index_list = []
         for start, end in i_ranges:
             ci = (np.r_[start: end],
@@ -64,7 +84,7 @@ class ConstraintPointBelow(Constraint):
             if var_type == VarType.SPECTRA:
                 ci = tuple(reversed(ci))
             index_list.append(ci)
-        const = ConstraintPointBelow(point_indices=index_list, value=threshold)
+        const = ConstraintPointBelow(point_indices=index_list, threshold=threshold)
         return const
 
 

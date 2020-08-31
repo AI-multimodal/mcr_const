@@ -7,7 +7,17 @@ from .basic import VarType
 
 
 class ConstraintSmooth(Constraint):
-    def __init__(self, line_indices=(), exponent=5, smoothing_factor=1.0, copy=False):
+    def __init__(self, line_indices: List[Tuple[np.ndarray, np.ndarray]], exponent: int = 5,
+                 smoothing_factor: float = 1.0, copy: bool = False):
+        """
+        Smoothing concentration evolution or spectra.
+
+        :param line_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
+                              dimension. Multiple region are supported.
+        :param exponent: The spline order.
+        :param smoothing_factor: Smoothing factor for spline.
+        :param copy: Whether keep original matrix.
+        """
         super(ConstraintSmooth, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
@@ -34,7 +44,17 @@ class ConstraintSmooth(Constraint):
 
     @classmethod
     def from_range(cls, i_specie: int, i_range: Tuple[int, int], exponent: int = 5, smoothing_factor: float = 1.0,
-                   var_type: VarType = VarType.CONCENTRATION):
+                   var_type: VarType = VarType.CONCENTRATION) -> 'ConstraintSmooth':
+        """
+        Construct a ConstraintSmooth instance using specified range.
+
+        :param i_specie: The index for targeting specie.
+        :param i_range: The range in profile, express as tuple index along the time dimension. Single region only.
+        :param exponent: The spline order.
+        :param smoothing_factor: Smoothing factor for spline.
+        :param var_type: Apply to concentration or spectra matrix.
+        :return: ConstraintSmooth instance
+        """
         start, end = i_range
         ci = (np.r_[start: end],
               np.full(end - start, fill_value=i_specie))
@@ -45,7 +65,14 @@ class ConstraintSmooth(Constraint):
 
 
 class ConstraintConstant(Constraint):
-    def __init__(self, line_indices=(), copy=False):
+    def __init__(self, line_indices: List[Tuple[np.ndarray, np.ndarray]], copy: bool = False):
+        """
+        Make the profile a constance, the value of the constant is determined iteratively.
+
+        :param line_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
+                             dimension. Multiple region are supported.
+        :param copy: Whether keep original matrix
+        """
         super(ConstraintConstant, self).__init__()
         self.copy = copy
         self.line_indices = tuple(line_indices)
@@ -65,7 +92,16 @@ class ConstraintConstant(Constraint):
         return A
 
     @classmethod
-    def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], var_type: VarType = VarType.CONCENTRATION):
+    def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], var_type: VarType = VarType.CONCENTRATION
+                   ) -> 'ConstraintConstant':
+        """
+        Construct ConstraintConstant instance using specified range.
+        :param i_specie: The index for targeting specie.
+        :param i_ranges: The range in profile, express as tuple index along the time dimension. Multiple region are
+                         supported.
+        :param var_type: Apply to concentration or spectra matrix.
+        :return:
+        """
         index_list = []
         for start, end in i_ranges:
             ci = (np.r_[start: end],
