@@ -6,7 +6,7 @@ with open("requirements.txt") as f_req:
 setup(
     name='MCR_Constraints',
     version='0.1',
-    package=['mcr'],
+    package=['mcr_const'],
     url='https://www.bnl.gov/cfn/',
     license='GPL',
     author='Xiaohui Qu',
