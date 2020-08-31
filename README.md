@@ -4,9 +4,10 @@ using MCR.
 For a time resolved spectra sequence D, it deconvolutes to concentration time evolution 
 profile C and individual spectra for each components.
 
-D = CS<sup>T</sup>
+D = CS<sup>T</sup>                            | 
+:--------------------------------------------:|
+![](images/equation/Equation.png) | 
 
-![](images/equation/Equation.png)
 
 # Installation:
 ```console
