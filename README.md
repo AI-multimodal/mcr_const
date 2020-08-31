@@ -1,5 +1,5 @@
 Prior Knowledge Embedding Constraints to Help the Deconvolution of Spectra Sequence 
-using MCR
+using MCR.
 
 For a time resolved spectra sequence D, it deconvolutes to concentration time evolution 
 profile C and individual spectra for each components.
@@ -124,8 +124,81 @@ It is intuitive that not only the concentrations conforms to physical law now, b
 quality. The underlying ConstraintPointBelow class pushes concentration to zero at certain regions, which makes use of
 the information obtained from prior knowledge.
 
+### Smoothing Constraint
+The smoothing constraint is designed to smooth noisy profile, for concentration or/and spectra. Similarly, it comes with
+a helper function for simplified construction. It is worth note that we need to specific ```var_type``` parameter to
+specify whether concentration or spectra is the target of constraint to be created:
+```python
+from pymcr.mcr import McrAR
+from pymcr.regressors import NNLS
+from mcr_const.constraints.nist import ConstraintSmooth, VarType
 
-For more details see the class definition the notebooks in [Examples](./examples).
+
+smooth_conc_1 = ConstraintSmooth.from_range(
+    i_specie=0, 
+    i_range=(0, spectra_sequence.shape[0]),
+    exponent=5,
+    smoothing_factor=0.02
+)
+smooth_conc_2 = ConstraintSmooth.from_range(
+    i_specie=1, 
+    i_range=(0, spectra_sequence.shape[0]),
+    exponent=5,
+    smoothing_factor=0.02
+)
+
+smooth_spec_1 = ConstraintSmooth.from_range(
+    i_specie=0, 
+    i_range=(0, spectra_sequence.shape[1]),
+    exponent=2,
+    smoothing_factor=0.1,
+    var_type=VarType.SPECTRA
+)
+smooth_spec_2 = ConstraintSmooth.from_range(
+    i_specie=1, 
+    i_range=(0, spectra_sequence.shape[1]),
+    exponent=2,
+    smoothing_factor=0.1,
+    var_type=VarType.SPECTRA
+)
+mcrar = McrAR(c_regr=NNLS(), st_regr=NNLS(), tol_increase=1.0,
+              c_constraints=[smooth_conc_1, smooth_conc_2],
+              st_constraints=[smooth_spec_1, smooth_spec_2])
+spec_guess = spectra_sequence[[5, -5]]
+mcrar.fit(spectra_sequence, ST=spec_guess)
+resolved_conc = mcrar.C_opt_
+resolved_spec = mcrar.ST_opt_
+
+
+plt.figure()
+colors = sns.color_palette('bright', resolved_conc.shape[0])
+for i, (conc, nc, color) in enumerate(zip(resolved_conc.T, noisy_conc.T, colors)):
+    plt.plot(conc, c=color, label=f'X Material {i+1}')
+    plt.plot(nc, lw=0.5, c=color)
+plt.legend()
+plt.yticks([])
+title = "Resolved Concentration"
+plt.title(title)
+plt.savefig(f'{title}.pdf', dpi=300)
+
+plt.figure()
+colors = sns.color_palette('bright', resolved_spec.shape[0])
+for i, (spec, ns, color) in enumerate(zip(resolved_spec, noisy_spec, colors)):
+    plt.plot(spec, lw=1.2, c=color, label=f'X Material {i+1}')
+    plt.plot(ns, lw=0.5, c=color)
+plt.legend()
+plt.xticks([])
+plt.yticks([])
+title = "Resolved Spectra"
+plt.title(title)
+plt.savefig(f'{title}.pdf', dpi=300)
+```
+Resolved Concentration                             |  Resolved Spectra
+:-------------------------------------------------:|:-------------------------------------------:
+![](images/smooth/Resolved%20Concentration.png) | ![](images/smooth/Resolved%20Spectra.png)
+
+
+For more details see the class definitions and the notebooks in [Examples](./examples).
 
 # Get help
 Send an email to [Xiaohui Qu](mailto:xiaqu@bnl.gov) at BNL/CFN.
