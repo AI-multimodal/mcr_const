@@ -3,7 +3,7 @@ from scipy.ndimage import gaussian_filter1d
 from typing import List, Tuple
 
 
-def generate_synthetic_spectra(step_pos: int, sigma: float, peaks: List[Tuple[int, int, int]], num_points: float = 250):
+def generate_synthetic_spectra(step_pos: int, sigma: float, peaks: List[Tuple[int, int, int]], num_points: int = 250):
     step_spec = np.ones(num_points)
     step_spec[:step_pos] = 0
 
