@@ -37,7 +37,7 @@ class ConstraintSmooth(Constraint):
                    var_type: VarType = VarType.CONCENTRATION):
         start, end = i_range
         ci = (np.r_[start: end],
-              np.full(start - end, fill_value=i_specie))
+              np.full(end - start, fill_value=i_specie))
         if var_type == VarType.SPECTRA:
             ci = tuple(reversed(ci))
         const = ConstraintSmooth(line_indices=[ci], exponent=exponent, smoothing_factor=smoothing_factor)
