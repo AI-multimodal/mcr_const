@@ -69,9 +69,10 @@ zero and then going up again. In addition, there are more than 2 phases in the s
 against phase law. To solve this problem, we can apply the rank selectivity constraint.
 
 ### Rank Selectivity Constraint
-This constraint is available via module ```mcr_const.constraints.nist``` in this repository and comes with a constructor for flexible targeting region definition. In parallel,
-we have provided a helper function ```from_xxx()``` as a ```classmethod``` to make ease usage of the constraint for
-simple questions. The following code is an example on how to use this constraint:
+This constraint is available via module ```mcr_const.constraints.nist``` in this repository and comes with a constructor 
+for flexible targeting region definition using numpy advanced indexing. In parallel, we have provided a helper function 
+```from_xxx()``` as a ```classmethod``` to make ease usage of the constraint for simple questions. The following code is 
+an example on how to use this constraint:
 ```python
 from pymcr.mcr import McrAR
 from pymcr.regressors import NNLS
