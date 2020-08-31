@@ -121,8 +121,8 @@ Resolved Concentration                             |  Resolved Spectra
 :-------------------------------------------------:|:-------------------------------------------:
 ![](images/rank_selectivity/Resolved%20Concentration.png) | ![](images/rank_selectivity/Resolved%20Spectra.png)
 
-It is intuitive that not only the concentrations conforms to physical law now, but also the improvement to spectra 
-quality. The underlying ConstraintPointBelow class pushes concentration to zero at certain regions, which makes use of
+It is intuitive that not only the concentrations conforms to physical law now, but also spectra quality shows 
+improvement. The underlying ConstraintPointBelow class pushes concentration to zero at certain regions, which makes use of
 the information obtained from prior knowledge.
 
 ### Smoothing Constraint
