@@ -9,7 +9,7 @@ D = CS<sup>T</sup>                            |
 ![](images/equation/Equation.png) | 
 
 
-# Installation:
+# Installation
 ```console
 git clone git@github.com:xhqu1981/mcr_const.git
 cd mcr_const
