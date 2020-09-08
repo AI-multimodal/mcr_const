@@ -105,7 +105,7 @@ class ConstraintConstant(Constraint):
         index_list = []
         for start, end in i_ranges:
             ci = (np.r_[start: end],
-                  np.full(start - end, fill_value=i_specie))
+                  np.full(end - start, fill_value=i_specie))
             if var_type == VarType.SPECTRA:
                 ci = tuple(reversed(ci))
             index_list.append(ci)
