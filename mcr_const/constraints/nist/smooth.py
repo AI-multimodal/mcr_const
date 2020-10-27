@@ -1,21 +1,22 @@
 import numpy as np
 from pymcr.constraints import Constraint
-from scipy.interpolate import UnivariateSpline
-from typing import Tuple, List
+from scipy.interpolate import UnivariateSpline, LSQUnivariateSpline
+from typing import Tuple, List, Union
 
 from .basic import VarType
 
 
 class ConstraintSmooth(Constraint):
     def __init__(self, line_indices: List[Tuple[np.ndarray, np.ndarray]], exponent: int = 5,
-                 smoothing_factor: float = 1.0, copy: bool = False):
+                 smoothing_factor: float = 1.0, knots: Union[None, List[int]] = None, copy: bool = False):
         """
         Smoothing concentration evolution or spectra.
 
         :param line_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
                               dimension. Multiple region are supported.
         :param exponent: The spline order.
-        :param smoothing_factor: Smoothing factor for spline.
+        :param smoothing_factor: Smoothing factor for spline. Should be None if knots is set.
+        :param knots: list of int. Interior knots of spline. This option is exclusive with smoothing_factor
         :param copy: Whether keep original matrix.
         """
         super(ConstraintSmooth, self).__init__()
@@ -23,6 +24,8 @@ class ConstraintSmooth(Constraint):
         self.line_indices = tuple(line_indices)
         self.exponent = exponent
         self.smoothing_factor = smoothing_factor
+        self.knots = knots
+        assert smoothing_factor is None or knots is None, "Can't use smoothing_factor and knots simultaneously"
 
     def transform(self, A):
         if self.copy:
@@ -36,7 +39,10 @@ class ConstraintSmooth(Constraint):
             assert len(p[0].shape) == 1
             x = np.arange(p[0].shape[0])
             y = A[p]
-            spl = UnivariateSpline(x, y, k=self.exponent, s=self.smoothing_factor)
+            if self.knots is None:
+                spl = UnivariateSpline(x, y, k=self.exponent, s=self.smoothing_factor)
+            else:
+                spl = LSQUnivariateSpline(x, y, self.knots, k=self.exponent)
             y2 = spl(x)
             y2[y2 < 0] = 0.0
             A[p] = y2
@@ -44,6 +50,7 @@ class ConstraintSmooth(Constraint):
 
     @classmethod
     def from_range(cls, i_specie: int, i_range: Tuple[int, int], exponent: int = 5, smoothing_factor: float = 1.0,
+                   knots: Union[None, List[int]] = None,
                    var_type: VarType = VarType.CONCENTRATION) -> 'ConstraintSmooth':
         """
         Construct a ConstraintSmooth instance using specified range.
@@ -52,6 +59,7 @@ class ConstraintSmooth(Constraint):
         :param i_range: The range in profile, express as tuple index along the time dimension. Single region only.
         :param exponent: The spline order.
         :param smoothing_factor: Smoothing factor for spline.
+        :param knots: list of int. Interior knots of spline. This option is exclusive with smoothing_factor
         :param var_type: Apply to concentration or spectra matrix.
         :return: ConstraintSmooth instance
         """
@@ -60,7 +68,7 @@ class ConstraintSmooth(Constraint):
               np.full(end - start, fill_value=i_specie))
         if var_type == VarType.SPECTRA:
             ci = tuple(reversed(ci))
-        const = ConstraintSmooth(line_indices=[ci], exponent=exponent, smoothing_factor=smoothing_factor)
+        const = ConstraintSmooth(line_indices=[ci], exponent=exponent, smoothing_factor=smoothing_factor, knots=knots)
         return const
 
 
