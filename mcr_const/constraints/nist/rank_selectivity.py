@@ -88,6 +88,55 @@ class ConstraintPointBelow(Constraint):
         return const
 
 
+class ConstraintFixedSegment(Constraint):
+    def __init__(self, point_indices: List[Tuple[np.ndarray, np.ndarray]], targets: List[np.ndarray],
+                 copy: bool = False):
+        """
+        Fix some regions to specified value
+
+        :param point_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
+                              dimension. Multiple region are supported.
+        :param targets: fixed values as a list of numpy arrays. Should have same number of species as point_indices.
+        :param copy: Whether keep original matrix
+        """
+        super(ConstraintFixedSegment, self).__init__()
+        self.copy = copy
+        self.point_indices = point_indices
+        self.targets = targets
+        assert len(self.targets) == len(self.point_indices)
+
+    def transform(self, A):
+        if self.copy:
+            A = A.copy()
+        for p, t in zip(self.point_indices, self.targets):
+            A[p] = t
+        return A
+
+    
+    @classmethod
+    def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], targets: List[np.ndarray],
+                   var_type: VarType = VarType.CONCENTRATION) -> 'ConstraintFixedSegment':
+        """
+        Construct a ConstraintFixedSegment instance using specified range and target.
+
+        :param i_specie: The index for targeting specie.
+        :param i_ranges: The range in profile, express as tuple index along the time dimension. Multiple region are
+                         supported.
+        :param targets: fixed values as a list of numpy arrays. Should have same number of species as point_indices.
+        :param var_type: Apply to concentration or spectra matrix.
+        :return: ConstraintFixedSegment instance
+        """
+        index_list = []
+        for start, end in i_ranges:
+            ci = (np.r_[start: end],
+                  np.full(end - start, fill_value=i_specie))
+            if var_type == VarType.SPECTRA:
+                ci = tuple(reversed(ci))
+            index_list.append(ci)
+        const = ConstraintFixedSegment(point_indices=index_list, targets=targets)
+        return const
+
+
 class ConstraintMonotonic(Constraint):
     def __init__(self, line_indices=(), copy=False, descending=False):
         super(ConstraintMonotonic, self).__init__()
