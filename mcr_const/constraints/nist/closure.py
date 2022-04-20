@@ -194,7 +194,7 @@ class StoichiometricNorm(Constraint):
         assert isinstance(edge_start_end_indices[0], (list, tuple))
         assert len(edge_start_end_indices[0]) == 2
         self.i_species = i_species
-        self.edge_indices = [np.r_[start, end] for start, end in edge_start_end_indices]
+        self.edge_indices = [np.r_[start: end] for start, end in edge_start_end_indices]
         self.norm_method = norm_method
 
     def transform(self, A):
