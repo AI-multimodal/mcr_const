@@ -211,6 +211,6 @@ class StoichiometricNorm(Constraint):
             edge_steps.append(es)
         edge_steps = np.stack(edge_steps, axis=-1)
         total_edge_steps = edge_steps.sum(axis=-1)
-        active_A = active_A * total_edge_steps[:, np.newaxis]
+        active_A = active_A / total_edge_steps[:, np.newaxis]
         A[self.i_species, :] = active_A
         return A
