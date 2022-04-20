@@ -5,6 +5,8 @@ from pymcr.constraints import Constraint
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 
+from mcr_const.constraints.nist.basic import NormMethod
+
 
 class ConstraintWithTotalConcentration(Constraint):
     def __init__(self, line_indices=(), shift_guess=0, scale_guess=1.0, bounds=((-10, 10), (0.9, 1.1)),
@@ -181,4 +183,34 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
             iparam1, iparam2 = i * self.param_per_gau, (i + 1) * self.param_per_gau
             A[p] = self.gau_func(x, *result_gau_params_2[iparam1:iparam2])
         self.fitting_result.append((result_gau_params_2, result_tot_param))
+        return A
+
+
+class StoichiometricNorm(Constraint):
+    def __init__(self, i_species, edge_start_end_indices, norm_method=NormMethod.TAIL_ONLY):
+        super(StoichiometricNorm, self).__init__()
+        assert isinstance(i_species, [list, tuple])
+        assert isinstance(edge_start_end_indices, [list, tuple])
+        assert isinstance(edge_start_end_indices[0], [list, tuple])
+        assert len(edge_start_end_indices[0]) == 2
+        self.i_species = i_species
+        self.edge_indices = [np.r_[start, end] for start, end in edge_start_end_indices]
+        self.norm_method = norm_method
+
+    def transform(self, A):
+        if self.copy:
+            A = A.copy()
+        active_A = A[self.i_species, :]
+        edge_specs = [active_A[:, ei] for ei in self.edge_indices]
+        edge_steps = []
+        for spec_el in edge_specs:
+            if self.norm_method == NormMethod.TAIL_ONLY:
+                es = spec_el[:, -1]
+            else:
+                raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
+            edge_steps.append(es)
+        edge_steps = np.stack(edge_steps, axis=-1)
+        total_edge_steps = edge_steps.sum(axis=-1)
+        active_A = active_A * total_edge_steps[:, np.newaxis]
+        A[self.i_species, :] = active_A
         return A
