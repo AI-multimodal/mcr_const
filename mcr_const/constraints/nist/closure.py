@@ -1,3 +1,4 @@
+import enum
 import inspect
 
 import numpy as np
@@ -187,12 +188,18 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
 
 
 class StoichiometricNorm(Constraint):
-    def __init__(self, i_species, element_start_end_indices, norm_method=NormMethod.TAIL_ONLY):
+    def __init__(self, i_species, element_start_end_indices, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY):
         super(StoichiometricNorm, self).__init__()
         assert isinstance(i_species, (list, tuple))
         assert isinstance(element_start_end_indices, (list, tuple))
         assert isinstance(element_start_end_indices[0], (list, tuple))
         assert len(element_start_end_indices[0]) == 2
+        if norm_method == NormMethod.AVERAGE:
+            assert isinstance(edge_position_indices, (list, type))
+            assert len(edge_position_indices) == len(element_start_end_indices)
+        else:
+            assert edge_position_indices is None
+        self.edge_position_indices = edge_position_indices
         self.i_species = i_species
         self.element_indices = [np.r_[start: end] for start, end in element_start_end_indices]
         self.norm_method = norm_method
@@ -203,9 +210,11 @@ class StoichiometricNorm(Constraint):
         active_A = A[self.i_species, :]
         element_specs = [active_A[:, ei] for ei in self.element_indices]
         element_steps = []
-        for spec_el in element_specs:
+        for i_el, spec_el in enumerate(element_specs):
             if self.norm_method == NormMethod.TAIL_ONLY:
                 es = spec_el[:, -1]
+            elif self.norm_method == NormMethod.AVERAGE:
+                spec_el[self.element_indices[i_el]:].mean(axis=1)
             else:
                 raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
             element_steps.append(es)
