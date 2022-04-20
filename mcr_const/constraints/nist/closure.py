@@ -189,9 +189,9 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
 class StoichiometricNorm(Constraint):
     def __init__(self, i_species, edge_start_end_indices, norm_method=NormMethod.TAIL_ONLY):
         super(StoichiometricNorm, self).__init__()
-        assert isinstance(i_species, [list, tuple])
-        assert isinstance(edge_start_end_indices, [list, tuple])
-        assert isinstance(edge_start_end_indices[0], [list, tuple])
+        assert isinstance(i_species, (list, tuple))
+        assert isinstance(edge_start_end_indices, (list, tuple))
+        assert isinstance(edge_start_end_indices[0], (list, tuple))
         assert len(edge_start_end_indices[0]) == 2
         self.i_species = i_species
         self.edge_indices = [np.r_[start, end] for start, end in edge_start_end_indices]
