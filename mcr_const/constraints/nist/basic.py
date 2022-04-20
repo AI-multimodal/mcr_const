@@ -8,5 +8,4 @@ class VarType(IntEnum):
 
 class NormMethod(IntEnum):
     TAIL_ONLY = 1,
-    EXTENDED_TAIL = 2,
     AVERAGE = 3
