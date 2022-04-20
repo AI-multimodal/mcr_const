@@ -214,7 +214,7 @@ class StoichiometricNorm(Constraint):
             if self.norm_method == NormMethod.TAIL_ONLY:
                 es = spec_el[:, -1]
             elif self.norm_method == NormMethod.AVERAGE:
-                spec_el[self.element_indices[i_el]:].mean(axis=1)
+                es = spec_el[:, self.edge_position_indices[i_el]:].mean(axis=1)
             else:
                 raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
             element_steps.append(es)
