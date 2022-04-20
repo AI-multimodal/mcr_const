@@ -187,30 +187,30 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
 
 
 class StoichiometricNorm(Constraint):
-    def __init__(self, i_species, edge_start_end_indices, norm_method=NormMethod.TAIL_ONLY):
+    def __init__(self, i_species, element_start_end_indices, norm_method=NormMethod.TAIL_ONLY):
         super(StoichiometricNorm, self).__init__()
         assert isinstance(i_species, (list, tuple))
-        assert isinstance(edge_start_end_indices, (list, tuple))
-        assert isinstance(edge_start_end_indices[0], (list, tuple))
-        assert len(edge_start_end_indices[0]) == 2
+        assert isinstance(element_start_end_indices, (list, tuple))
+        assert isinstance(element_start_end_indices[0], (list, tuple))
+        assert len(element_start_end_indices[0]) == 2
         self.i_species = i_species
-        self.edge_indices = [np.r_[start: end] for start, end in edge_start_end_indices]
+        self.element_indices = [np.r_[start: end] for start, end in element_start_end_indices]
         self.norm_method = norm_method
 
     def transform(self, A):
         if self.copy:
             A = A.copy()
         active_A = A[self.i_species, :]
-        edge_specs = [active_A[:, ei] for ei in self.edge_indices]
-        edge_steps = []
-        for spec_el in edge_specs:
+        element_specs = [active_A[:, ei] for ei in self.element_indices]
+        element_steps = []
+        for spec_el in element_specs:
             if self.norm_method == NormMethod.TAIL_ONLY:
                 es = spec_el[:, -1]
             else:
                 raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
-            edge_steps.append(es)
-        edge_steps = np.stack(edge_steps, axis=-1)
-        total_edge_steps = edge_steps.sum(axis=-1)
+            element_steps.append(es)
+        element_steps = np.stack(element_steps, axis=-1)
+        total_edge_steps = element_steps.sum(axis=-1)
         active_A = active_A / total_edge_steps[:, np.newaxis]
         A[self.i_species, :] = active_A
         return A
