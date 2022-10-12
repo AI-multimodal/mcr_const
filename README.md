@@ -1,5 +1,5 @@
 Prior Knowledge Embedding Constraints to Help the Deconvolution of Spectra Sequence 
-using MCR.
+using Multivariate Curve Resolution (MCR).
 
 For a time resolved spectra sequence D, it deconvolutes to concentration time evolution 
 profile C and individual spectra S<sup>T</sup> for each components.
@@ -218,5 +218,12 @@ THE SOFTWARE IS SUPPLIED "AS IS" WITHOUT WARRANTY OF ANY KIND. THE UNITED STATES
 
 IN NO EVENT SHALL THE UNITED STATES, THE UNITED STATES DEPARTMENT OF ENERGY, OR THEIR EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL OR PUNITIVE DAMAGES OF ANY KIND OR NATURE RESULTING FROM EXERCISE OF THIS LICENSE AGREEMENT OR THE USE OF THE SOFTWARE.
 
+# Developers
+[Xiaohui Qu](mailto:xiaqu@bnl.gov), [Mingzhao Liu](mailto:mzliu@bnl.gov), [Mark Hybertsen](mailto:mhyberts@bnl.gov), [Ruoshui Li](mainto:rli1@bnl.gov), [Deyu Lu](mailto:dlu@bnl.gov), [Xuance Jiang](mailto:xuance.jiang@stonybrook.edu), [Dario Stacchiola](mailto:djs@bnl.gov) at BNL/CFN.
+
 # Get help
 Send an email to [Xiaohui Qu](mailto:xiaqu@bnl.gov) at BNL/CFN.
+
+# Citation
+1. Qu X, Yan D, Li R, Cen J, Zhou C, Zhang W, Lu D, Attenkofer K, Stacchiola DJ, Hybertsen MS,* Stavitski E,* Liu* M Resolving the Evolution of Atomic Layer-Deposited Thin-Film Growth by Continuous In Situ X-Ray Absorption Spectroscopy. Chemistry of Materials 2021, 33, 1740–1751. 
+2. Li R, Jiang X, Zhou C, Topsakal M, Nykypanchuk D, Attenkofer K, Stacchiola D, Hybertsen MS, Stavitski E,* Qu X,* Lu D,* Liu M* Deciphering Phase Evolution in Complex Metal Oxide Thin Films via High-Throughput Materials Synthesis and Characterization. Nanotechnology (In Review).
