@@ -219,7 +219,7 @@ THE SOFTWARE IS SUPPLIED "AS IS" WITHOUT WARRANTY OF ANY KIND. THE UNITED STATES
 IN NO EVENT SHALL THE UNITED STATES, THE UNITED STATES DEPARTMENT OF ENERGY, OR THEIR EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL OR PUNITIVE DAMAGES OF ANY KIND OR NATURE RESULTING FROM EXERCISE OF THIS LICENSE AGREEMENT OR THE USE OF THE SOFTWARE.
 
 # Developers
-[Xiaohui Qu](mailto:xiaqu@bnl.gov), [Mingzhao Liu](mailto:mzliu@bnl.gov), [Mark Hybertsen](mailto:mhyberts@bnl.gov), [Ruoshui Li](mainto:rli1@bnl.gov), [Deyu Lu](mailto:dlu@bnl.gov), [Xuance Jiang](mailto:xuance.jiang@stonybrook.edu), [Dario Stacchiola](mailto:djs@bnl.gov) at BNL/CFN.
+[Xiaohui Qu](mailto:xiaqu@bnl.gov), [Mingzhao Liu](mailto:mzliu@bnl.gov), [Mark Hybertsen](mailto:mhyberts@bnl.gov), [Ruoshui Li](mailto:rli1@bnl.gov), [Deyu Lu](mailto:dlu@bnl.gov), [Xuance Jiang](mailto:xuance.jiang@stonybrook.edu), [Dario Stacchiola](mailto:djs@bnl.gov) at BNL/CFN.
 
 # Get help
 Send an email to [Xiaohui Qu](mailto:xiaqu@bnl.gov) at BNL/CFN.
