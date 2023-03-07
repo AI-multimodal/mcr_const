@@ -1,22 +1,25 @@
 import numpy as np
 from pymcr.constraints import Constraint
 from scipy.interpolate import UnivariateSpline, LSQUnivariateSpline
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Optional
+from scipy.ndimage import gaussian_filter1d
 
 from .basic import VarType
 
 
 class ConstraintSmooth(Constraint):
     def __init__(self, line_indices: List[Tuple[np.ndarray, np.ndarray]], exponent: int = 5,
-                 smoothing_factor: float = 1.0, knots: Union[None, List[int]] = None, copy: bool = False):
+                 smoothing_factor: Optional[float] = None, knots: Optional[List[int]] = None, 
+                 gaussian_sigma: Optional[float] = None, copy: bool = False):
         """
         Smoothing concentration evolution or spectra.
 
         :param line_indices: numpy indices to access the C or ST matrix, each region is tuple of of the index for two
                               dimension. Multiple region are supported.
         :param exponent: The spline order.
-        :param smoothing_factor: Smoothing factor for spline. Should be None if knots is set.
-        :param knots: list of int. Interior knots of spline. This option is exclusive with smoothing_factor
+        :param smoothing_factor: Smoothing factor for spline. Should be None if knots or gaussian_sigma is set.
+        :param knots: list of int. Interior knots of spline. Should be None if smoothing_factor or gaussian_sigma is set.
+        :param gaussian_sigma: float. Width of Gaussian Smoothing Kernel. Should be None if smoothing_factor or knots is set.
         :param copy: Whether keep original matrix.
         """
         super(ConstraintSmooth, self).__init__()
@@ -25,7 +28,17 @@ class ConstraintSmooth(Constraint):
         self.exponent = exponent
         self.smoothing_factor = smoothing_factor
         self.knots = knots
-        assert smoothing_factor is None or knots is None, "Can't use smoothing_factor and knots simultaneously"
+        self.gaussian_sigma = gaussian_sigma
+        total_num_smoothing_options = 0
+        if self.smoothing_factor is not None:
+            total_num_smoothing_options += 1
+        if self.knots is not None:
+            total_num_smoothing_options += 1
+        if self.gaussian_sigma is not None:
+            total_num_smoothing_options += 1
+        assert total_num_smoothing_options == 1, \
+            "Among smoothing_factor, knots and gaussian_sigma, " \
+            "there should be one and only one active "
 
     def transform(self, A):
         if self.copy:
@@ -39,11 +52,15 @@ class ConstraintSmooth(Constraint):
             assert len(p[0].shape) == 1
             x = np.arange(p[0].shape[0])
             y = A[p]
-            if self.knots is None:
+            if self.smoothing_factor is not None:
                 spl = UnivariateSpline(x, y, k=self.exponent, s=self.smoothing_factor)
-            else:
+                y2 = spl(x)
+            elif self.knots is not None:
                 spl = LSQUnivariateSpline(x, y, self.knots, k=self.exponent)
-            y2 = spl(x)
+                y2 = spl(x)
+            else:
+                y2 = gaussian_filter1d(y, sigma=self.gaussian_sigma)
+            
             y2[y2 < 0] = 0.0
             A[p] = y2
         return A
