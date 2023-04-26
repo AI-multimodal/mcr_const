@@ -204,7 +204,7 @@ Resolved Concentration                             |  Resolved Spectra
 ![](images/smooth/Resolved%20Concentration.png) | ![](images/smooth/Resolved%20Spectra.png)
 
 
-For more details see the class definitions and the notebooks in [Examples](./examples).
+For more details see the class definitions and the notebooks in [Examples](./examples), including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), and a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb).
 
 # Funding acknowledgement
 
@@ -226,4 +226,4 @@ Send an email to [Xiaohui Qu](mailto:xiaqu@bnl.gov) at BNL/CFN.
 
 # Citation
 1. Qu X, Yan D, Li R, Cen J, Zhou C, Zhang W, Lu D, Attenkofer K, Stacchiola DJ, Hybertsen MS,* Stavitski E,* Liu* M Resolving the Evolution of Atomic Layer-Deposited Thin-Film Growth by Continuous In Situ X-Ray Absorption Spectroscopy. Chemistry of Materials 2021, 33, 1740–1751. 
-2. Li R, Jiang X, Zhou C, Topsakal M, Nykypanchuk D, Attenkofer K, Stacchiola D, Hybertsen MS, Stavitski E,* Qu X,* Lu D,* Liu M* Deciphering Phase Evolution in Complex Metal Oxide Thin Films via High-Throughput Materials Synthesis and Characterization. Nanotechnology (In Review).
+2. Li R, Jiang X, Zhou C, Topsakal M, Nykypanchuk D, Attenkofer K, Stacchiola D, Hybertsen MS, Stavitski E,* Qu X,* Lu D,* Liu M* Deciphering Phase Evolution in Complex Metal Oxide Thin Films via High-Throughput Materials Synthesis and Characterization. Nanotechnology 2023, 34, 125701.
