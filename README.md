@@ -8,6 +8,9 @@ D = CS<sup>T</sup>                            |
 :--------------------------------------------:|
 ![](images/equation/Equation.png) | 
 
+# QuickStart
+The notebooks in [Examples](./examples) demonstates the usage of the constraints, including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), and a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb). 
+
 
 # Installation
 ```console
@@ -17,9 +20,6 @@ conda create --name mcr_py3 python=3
 source activate mcr_py3
 python setup.py develop
 ```
-
-# QuickStart
-The notebooks in [Examples](./examples) demonstates the usage of the constraints, including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), and a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb). 
 
 # Usage
 The constraints in this repository is designed to be compatible with [pyMCR](https://github.com/usnistgov/pyMCR) 
