@@ -6,7 +6,7 @@ from pymcr.constraints import Constraint
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 
-from mcr_const.constraints.nist.basic import NormMethod
+from .basic import NormMethod
 
 
 class ConstraintWithTotalConcentration(Constraint):
