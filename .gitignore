@@ -1,2 +1,3 @@
 *.pyc
 MCR_Constraints.egg-info
+.DS_Store
