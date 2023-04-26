@@ -18,6 +18,9 @@ source activate mcr_py3
 python setup.py develop
 ```
 
+# QuickStart
+The notebooks in [Examples](./examples) demonstates the usage of the constraints, including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), and a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb). 
+
 # Usage
 The constraints in this repository is designed to be compatible with [pyMCR](https://github.com/usnistgov/pyMCR) 
 from NIST. Every MCR can be initiated in the same way they would do in pyMCR.
@@ -203,8 +206,6 @@ Resolved Concentration                             |  Resolved Spectra
 :-------------------------------------------------:|:-------------------------------------------:
 ![](images/smooth/Resolved%20Concentration.png) | ![](images/smooth/Resolved%20Spectra.png)
 
-
-For more details see the class definitions and the notebooks in [Examples](./examples), including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), and a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb).
 
 # Funding acknowledgement
 
