@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open("requirements.txt") as f_req:
     required_list = [line.rstrip() for line in f_req.readlines()]
@@ -6,7 +6,7 @@ with open("requirements.txt") as f_req:
 setup(
     name='MCR_Constraints',
     version='0.1',
-    packages=find_packages(),
+    packages=['mcr_const'],
     url='https://www.bnl.gov/cfn/',
     license='GPL',
     author='Xiaohui Qu',
