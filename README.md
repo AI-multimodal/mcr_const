@@ -79,7 +79,7 @@ assuming phase law holds for this dataset. The following code is an example on h
 from pymcr.mcr import McrAR
 from pymcr.regressors import NNLS
 from pymcr.constraints import ConstraintNorm
-from mcr_const.constraints.nist import ConstraintPointBelow
+from mcr_const import ConstraintPointBelow
 
 rank_selectivity = ConstraintPointBelow.from_phase_law(
     n_species=4,
@@ -135,7 +135,7 @@ specify whether concentration or spectra is the target of constraint to be creat
 ```python
 from pymcr.mcr import McrAR
 from pymcr.regressors import NNLS
-from mcr_const.constraints.nist import ConstraintSmooth, VarType
+from mcr_const import ConstraintSmooth, VarType
 
 
 smooth_conc_1 = ConstraintSmooth.from_range(
