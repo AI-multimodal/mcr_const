@@ -9,7 +9,7 @@ D = CS<sup>T</sup>                            |
 ![](images/equation/Equation.png) | 
 
 # QuickStart
-The notebooks in [Examples](./examples) demonstates the usage of the constraints, including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb) and more complex multimodal example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/TiZnK_XANES_MultiModal_MCR_Example.ipynb). 
+The notebooks in [Examples](./examples) demonstates the usage of the constraints, including a rank selectivity example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/rank_selectivity.ipynb), a smooth constraint example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/smooth_concentration.ipynb) and a more complex multimodal example [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AI-multimodal/mcr_const/blob/master/examples/TiZnK_XANES_MultiModal_MCR_Example.ipynb). 
 
 
 # Installation
