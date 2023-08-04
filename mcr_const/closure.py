@@ -223,3 +223,31 @@ class StoichiometricNorm(Constraint):
         active_A = active_A / total_edge_steps[:, np.newaxis]
         A[self.i_species, :] = active_A
         return A
+
+
+class SpectrumNormalization(Constraint):
+    def __init__(self, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY):
+        super(StoichiometricNorm, self).__init__()
+        if norm_method == NormMethod.AVERAGE:
+            assert isinstance(edge_position_indices, (int, list, tuple))
+        else:
+            assert edge_position_indices is None
+        self.edge_position_indices = edge_position_indices
+        self.norm_method = norm_method
+
+    def transform(self, A):
+        if self.copy:
+            A = A.copy()
+        print(A.shape)
+        if self.norm_method == NormMethod.TAIL_ONLY:
+            edge_steps = A[:, -1]
+        elif self.norm_method == NormMethod.AVERAGE:
+            if isinstance(self.edge_position_indices) == 1:
+                edge_steps = A[:, self.edge_position_indices:].mean(axis=1)
+            else:
+                assert A.shape[0] == len(self.edge_position_indices)
+                edge_steps = np.array([A[:, epi:].mean() for epi in self.edge_position_indices])
+        else:
+            raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
+        A = A / edge_steps[:, np.newaxis]
+        return A
