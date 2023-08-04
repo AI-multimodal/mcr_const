@@ -227,7 +227,7 @@ class StoichiometricNorm(Constraint):
 
 class SpectrumNormalization(Constraint):
     def __init__(self, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY):
-        super(StoichiometricNorm, self).__init__()
+        super(SpectrumNormalization, self).__init__()
         if norm_method == NormMethod.AVERAGE:
             assert isinstance(edge_position_indices, (int, list, tuple))
         else:
