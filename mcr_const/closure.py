@@ -238,11 +238,10 @@ class SpectrumNormalization(Constraint):
     def transform(self, A):
         if self.copy:
             A = A.copy()
-        print(A.shape)
         if self.norm_method == NormMethod.TAIL_ONLY:
             edge_steps = A[:, -1]
         elif self.norm_method == NormMethod.AVERAGE:
-            if isinstance(self.edge_position_indices) == 1:
+            if isinstance(self.edge_position_indices, int):
                 edge_steps = A[:, self.edge_position_indices:].mean(axis=1)
             else:
                 assert A.shape[0] == len(self.edge_position_indices)
