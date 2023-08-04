@@ -188,8 +188,10 @@ class ConstraintWithFunctionAndTotalConcentration(Constraint):
 
 
 class StoichiometricNorm(Constraint):
-    def __init__(self, i_species, element_start_end_indices, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY):
+    def __init__(self, i_species, element_start_end_indices, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY,
+                 copy=False):
         super(StoichiometricNorm, self).__init__()
+        self.copy = copy
         assert isinstance(i_species, (list, tuple))
         assert isinstance(element_start_end_indices, (list, tuple))
         assert isinstance(element_start_end_indices[0], (list, tuple))
@@ -226,8 +228,9 @@ class StoichiometricNorm(Constraint):
 
 
 class SpectrumNormalization(Constraint):
-    def __init__(self, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY):
+    def __init__(self, edge_position_indices=None, norm_method=NormMethod.TAIL_ONLY, copy=False):
         super(SpectrumNormalization, self).__init__()
+        self.copy = copy
         if norm_method == NormMethod.AVERAGE:
             assert isinstance(edge_position_indices, (int, list, tuple))
         else:
@@ -248,5 +251,5 @@ class SpectrumNormalization(Constraint):
                 edge_steps = np.array([A[:, epi:].mean() for epi in self.edge_position_indices])
         else:
             raise ValueError(f"Normalization method {NormMethod} hasn't been implemented yet")
-        A = A / edge_steps[:, np.newaxis]
+        A[...] = A / edge_steps[:, np.newaxis]
         return A
