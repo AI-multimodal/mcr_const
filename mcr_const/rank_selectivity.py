@@ -35,7 +35,7 @@ class ConstraintPointBelow(Constraint):
                 if (A[p] > self.threshold).any():
                     p_above_index = A[p] > self.threshold
                     p_above = tuple([dim[p_above_index] for dim in p])
-                    A[p_above] = self.threshold
+                    A[p_above] = A[p_above] + (A[p_above] - self.threshold) * self.ratio
             else:
                 if A[p] > self.threshold:
                     A[p] = A[p] + (self.threshold - A[p]) * self.ratio
