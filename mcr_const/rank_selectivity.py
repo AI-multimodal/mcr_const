@@ -70,7 +70,7 @@ class ConstraintPointBelow(Constraint):
 
     @classmethod
     def from_range(cls, i_specie: int, i_ranges: List[Tuple[int, int]], threshold: float = 1.0E-3,
-                   var_type: VarType = VarType.CONCENTRATION) -> 'ConstraintPointBelow':
+                   var_type: VarType = VarType.CONCENTRATION, ratio: float = 1.0) -> 'ConstraintPointBelow':
         """
         Construct a ConstraintPointBelow instance using specified range.
 
@@ -88,7 +88,9 @@ class ConstraintPointBelow(Constraint):
             if var_type == VarType.SPECTRA:
                 ci = tuple(reversed(ci))
             index_list.append(ci)
-        const = ConstraintPointBelow(point_indices=index_list, threshold=threshold)
+        const = ConstraintPointBelow(point_indices=index_list, 
+                                     threshold=threshold,
+                                     ratio=ratio)
         return const
 
 
