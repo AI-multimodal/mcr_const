@@ -7,7 +7,8 @@ from .basic import VarType
 
 class ConstraintPointBelow(Constraint):
     def __init__(self, point_indices: List[Tuple[np.ndarray, np.ndarray]], threshold: float = 1.0E-3,
-                 copy: bool = False, retain_mean: bool = True):
+                 copy: bool = False, retain_mean: bool = True,
+                 ratio=1.0):
         """
         Push the values at specific region to be bellow threshold
 
@@ -22,6 +23,7 @@ class ConstraintPointBelow(Constraint):
         self.point_indices = point_indices
         self.threshold = threshold
         self.retain_mean = retain_mean
+        self.ratio = ratio
 
     def transform(self, A):
 
@@ -36,7 +38,7 @@ class ConstraintPointBelow(Constraint):
                     A[p_above] = self.threshold
             else:
                 if A[p] > self.threshold:
-                    A[p] = self.threshold
+                    A[p] = A[p] + (self.threshold - A[p]) * self.ratio
         if self.retain_mean:
             A *= prev_mean / A.mean()
         return A
