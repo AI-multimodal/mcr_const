@@ -45,7 +45,7 @@ class ConstraintPointBelow(Constraint):
 
     @classmethod
     def from_phase_law(cls, n_species: int, sequence_length: int, interface_positions: List[int],
-                       threshold: float = 1.0E-3) -> 'ConstraintPointBelow':
+                       threshold: float = 1.0E-3, ratio: float = 1.0) -> 'ConstraintPointBelow':
         """
         Generate a constraint based on phase law. Design to be use for the concentration matrix.
 
@@ -63,7 +63,9 @@ class ConstraintPointBelow(Constraint):
                           ]
         zero_indices = [(zp, np.full_like(zp, fill_value=i))
                         for i, zp in enumerate(zero_positions)]
-        c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, threshold=threshold)
+        c_zero_constraint = ConstraintPointBelow(point_indices=zero_indices, 
+                                                 threshold=threshold,
+                                                 ratio=ratio)
         return c_zero_constraint
 
     @classmethod
